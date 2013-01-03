@@ -21,7 +21,7 @@
 . /etc/rc.d/init.d/functions
 
 NAME=statsd
-INSTALL_DIR=/usr/share/$NAME
+INSTALL_DIR=<%= @node["statsd"]["dir"] -%>
 NODE_EXE=/usr/local/bin/node
 
 [ -x $NODE_EXE ] || exit 0
@@ -38,7 +38,7 @@ start() {
     if [ ! -f /var/lock/subsys/$NAME ]; then
         echo -n $"Starting $NAME daemon: "
         # daemon
-        sudo -u statsd -- $NODE_EXE $INSTALL_DIR/stats.js /etc/$NAME/config.js > <%= @log_file %> 2>&1 < <%= @log_file %> &
+        sudo -u statsd -- $NODE_EXE $INSTALL_DIR/stats.js <%= @node["statsd"]["conf_dir"] -%>/$NAME/config.js > <%= @log_file %> 2>&1 < <%= @log_file %> &
         RETVAL=$?
         if [ $RETVAL -eq 0 ]; then
             touch /var/lock/subsys/$NAME
